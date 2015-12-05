@@ -40,7 +40,7 @@ public class TimeFetcher extends AsyncTask<URL, Integer, Boolean> {
     }
 
     private void setDefaultValues() {
-        this.time = "00:00:00";
+        this.time = "00:00";
         this.timeInfo = "N/A";
         this.gmtInfo = "N/A";
     }
