@@ -59,7 +59,7 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
         boolean toret = false;
 
         try {
-            // Connection
+            // Check connectivty
             Log.d( LOG_TAG, "in doInBackground(): checking connectivity" );
             ConnectivityManager connMgr = (ConnectivityManager)  this.activity.getSystemService( Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
