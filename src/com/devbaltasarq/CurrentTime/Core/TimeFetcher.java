@@ -19,10 +19,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Fetches the time to GeoNames
+ * Fetches the time from GeoNames
  * Created by baltasarq on 4/12/15.
  */
-public class TimeFetcher extends AsyncTask<URL, Integer, Boolean> {
+public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
     public static final String LOG_TAG = "TimeFetcher";
     public static final String COUNTRY_NAME_TAG = "countryName";
     public static final String TIMEZONE_TAG = "timezoneId";
@@ -124,14 +124,13 @@ public class TimeFetcher extends AsyncTask<URL, Integer, Boolean> {
             }
         }
 
-        End:
         return toret;
     }
 
     private String getStringFromStream(InputStream is)
     {
         StringBuilder toret = new StringBuilder();
-        String line = "";
+        String line;
 
         try ( BufferedReader reader = new BufferedReader( new InputStreamReader( is ) ) ) {
             while( ( line = reader.readLine() ) != null ) {
