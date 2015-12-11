@@ -60,17 +60,17 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
 
         try {
             // Check connectivty
-            Log.d( LOG_TAG, "in doInBackground(): checking connectivity" );
+            Log.d( LOG_TAG, " in doInBackground(): checking connectivity" );
             ConnectivityManager connMgr = (ConnectivityManager)  this.activity.getSystemService( Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             boolean connected = ( networkInfo != null && networkInfo.isConnected() );
-            Log.d( LOG_TAG, "in doInBackground(), connected: " + connected );
+            Log.d( LOG_TAG, " in doInBackground(), connected: " + connected );
 
             if ( !connected ) {
                 this.activity.setStatus( R.string.status_not_connected );
             } else {
                 // Connection
-                Log.d( LOG_TAG, "in doInBackground(): connecting" );
+                Log.d( LOG_TAG, " in doInBackground(): connecting" );
                 HttpURLConnection conn = (HttpURLConnection) urls[ 0 ].openConnection();
                 conn.setReadTimeout( 1000 /* milliseconds */ );
                 conn.setConnectTimeout( 1000 /* milliseconds */ );
@@ -86,7 +86,7 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
                 is = conn.getInputStream();
 
                 // Starts the query
-                Log.d( LOG_TAG, "in doInBackground(): querying" );
+                Log.d( LOG_TAG, " in doInBackground(): querying" );
                 JSONObject json = new JSONObject( getStringFromStream( is ) );
                 Log.d( LOG_TAG, " in doInBackground(): content fetched: " + json.toString( 4 ) );
                 this.time = json.getString( TIME_TAG );
@@ -107,7 +107,7 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
                 }
 
                 toret = true;
-                Log.d( LOG_TAG, "in doInBackground(): finished" );
+                Log.d( LOG_TAG, " in doInBackground(): finished" );
             }
         }
         catch(JSONException exc) {
@@ -119,7 +119,7 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    Log.e( LOG_TAG, "in doInBackGround(): error closing input stream" );
+                    Log.e( LOG_TAG, " in doInBackGround(): error closing input stream" );
                 }
             }
         }
@@ -151,9 +151,9 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
 
         if ( !result ) {
             idFinalStatus = R.string.status_error;
-            Log.i( LOG_TAG, "in onPostExecute(): time fetched incorrectly" );
+            Log.i( LOG_TAG, " in onPostExecute(): time fetched incorrectly" );
         } else {
-            Log.i( LOG_TAG, "in onPostExecute(): time fetching ok" );
+            Log.i( LOG_TAG, " in onPostExecute(): time fetching ok" );
         }
 
         lblStatus.setText( idFinalStatus );
