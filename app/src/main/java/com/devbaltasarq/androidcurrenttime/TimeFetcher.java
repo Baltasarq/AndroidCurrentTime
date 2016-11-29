@@ -27,7 +27,7 @@ public class TimeFetcher extends AsyncTask<URL, Void, Boolean> {
     public static final String TIMEZONE_TAG = "timezoneId";
     public static final String GMT_OFFSET_TAG = "gmtOffset";
     public static final String TIME_TAG = "time";
-    public static final String TIME_URL = "http://api.geonames.org/timezoneJSON?lat=42.34&lng=-7.86&username=demo";
+    public static final String TIME_URL = "http://api.geonames.org/timezoneJSON?lat=42.34&lng=-7.86&username=dispositivos_moviles";
 
     private MainActivity activity;
     private String time;
