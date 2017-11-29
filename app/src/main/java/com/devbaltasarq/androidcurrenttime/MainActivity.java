@@ -2,7 +2,7 @@ package com.devbaltasarq.androidcurrenttime;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
@@ -14,9 +14,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends Activity {
-    private Handler handler;
-    private Timer timer;
-
     /**
      * Called when the activity is first created.
      */
@@ -34,7 +31,7 @@ public class MainActivity extends Activity {
             }
         } );
 
-        this.handler = new Handler();
+        this.setDefaultValues();
     }
 
     @Override
@@ -43,7 +40,6 @@ public class MainActivity extends Activity {
 
         this.timer.cancel();
         this.timer.purge();
-        this.timer = null;
     }
 
     @Override
@@ -52,26 +48,23 @@ public class MainActivity extends Activity {
         super.onResume();
 
         this.setStatus( R.string.status_init );
-        this.timer = new Timer();
 
         TimerTask taskFetchTime = new TimerTask() {
             @Override
             public void run() {
-                MainActivity.this.handler.post( new Runnable() {
-                    public void run() {
-                        try {
-                            new TimeFetcher( MainActivity.this ).execute( new URL( TimeFetcher.TIME_URL ) );
-                        } catch(MalformedURLException e)
-                        {
-                            MainActivity.this.setStatus( R.string.status_incorrect_url );
-                        }
-                    }
-                });
+                try {
+                    new HttpFetcher(MainActivity.this ).execute( new URL( HttpFetcher.TIME_URL ) );
+                } catch(MalformedURLException e)
+                {
+                    Log.e( "Timer.run", e.getMessage() );
+                    MainActivity.this.setStatus( R.string.status_incorrect_url );
+                }
             }
         };
 
-        // Program the task for every ten seconds from nows
-        timer.schedule( taskFetchTime, 0, 10000 );
+        // Program the task for every 20 seconds from now on.
+        this.timer = new Timer();
+        timer.schedule( taskFetchTime, 0, 20000 );
     }
 
     public void setTimeInfo(String time, String timeZoneInfo, String gmtInfo)
@@ -85,9 +78,20 @@ public class MainActivity extends Activity {
         lblGmtInfo.setText( gmtInfo );
     }
 
-    public void setStatus(int msgId) {
+    public void setStatus(int msgId)
+    {
         final TextView lblStatus = (TextView) this.findViewById( R.id.lblStatus );
 
         lblStatus.setText( msgId );
     }
+
+    public void setDefaultValues()
+    {
+        final String notAvailable = this.getString( R.string.status_not_available );
+
+        this.setTimeInfo( "00:00", notAvailable, notAvailable );
+        this.setStatus( R.string.status_error );
+    }
+
+    private Timer timer;
 }

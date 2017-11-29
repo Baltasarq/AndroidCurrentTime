@@ -7,4 +7,5 @@
     <string name="status_error">Error fetching time</string>
     <string name="status_connecting">Connecting to server...</string>
     <string name="status_not_connected">Please activate net connectivity</string>
+    <string name="status_not_available">N/A</string>
 </resources>
