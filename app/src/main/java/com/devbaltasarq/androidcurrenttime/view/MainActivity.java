@@ -1,0 +1,132 @@
+package com.devbaltasarq.androidcurrenttime.view;
+
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.devbaltasarq.androidcurrenttime.R;
+import com.devbaltasarq.androidcurrenttime.core.DataDateTime;
+import com.devbaltasarq.androidcurrenttime.core.HttpFetcher;
+import com.devbaltasarq.androidcurrenttime.core.Observer;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class MainActivity extends Activity implements Observer {
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    /**
+     * Called when the activity is first created.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate( savedInstanceState );
+        this.requestWindowFeature( Window.FEATURE_NO_TITLE );
+        setContentView( R.layout.activity_main );
+
+        ImageButton btQuit = this.findViewById( R.id.btQuit );
+        btQuit.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.finish();
+            }
+        } );
+
+        this.setDefaultValues();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if ( this.timer != null ) {
+            this.timer.cancel();
+            this.timer.purge();
+        }
+
+        return;
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        this.setStatus( R.string.status_init );
+
+        if ( this.chkConnectivity() ) {
+            TimerTask taskFetchTime = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        new HttpFetcher(MainActivity.this ).execute( new URL( HttpFetcher.TIME_URL ) );
+                    } catch(MalformedURLException e)
+                    {
+                        Log.e( "Timer.run", e.getMessage() );
+                        MainActivity.this.setStatus( R.string.status_incorrect_url );
+                    }
+                }
+            };
+
+            // Program the task for every 20 seconds from now on.
+            this.timer = new Timer();
+            timer.schedule( taskFetchTime, 0, 20000 );
+        }
+
+        return;
+    }
+
+    public void setTimeInfo(DataDateTime data)
+    {
+        final TextView lblTime = this.findViewById( R.id.lblTime );
+        final TextView lblGmtInfo = this.findViewById( R.id.lblGmtInfo );
+        final TextView lblTimeZoneInfo = this.findViewById( R.id.lblTimeZoneInfo );
+
+        lblTime.setText( data.getDateTime() );
+        lblTimeZoneInfo.setText( data.getTimeInfo() );
+        lblGmtInfo.setText( data.getGmtInfo() );
+    }
+
+    public void setStatus(int msgId)
+    {
+        final TextView lblStatus = this.findViewById( R.id.lblStatus );
+
+        lblStatus.setText( msgId );
+    }
+
+    public void setDefaultValues()
+    {
+        final String notAvailable = this.getString( R.string.status_not_available );
+
+        this.setTimeInfo( DataDateTime.INVALID );
+        this.setStatus( R.string.status_error );
+    }
+
+    private boolean chkConnectivity()
+    {
+        Log.d( LOG_TAG, "checking connectivity" );
+        ConnectivityManager connMgr =
+                (ConnectivityManager)  this.getSystemService( Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        boolean connected = ( networkInfo != null && networkInfo.isConnected() );
+
+        if ( !connected ) {
+            this.setStatus( R.string.status_not_connected );
+        }
+
+        return connected;
+    }
+
+    private Timer timer;
+}
