@@ -60,6 +60,7 @@ public class MainActivity extends Activity implements Observer {
     public void onResume()
     {
         super.onResume();
+        final HttpFetcher FETCHER = new HttpFetcher(this );
 
         this.setStatus( R.string.status_init );
 
@@ -67,13 +68,7 @@ public class MainActivity extends Activity implements Observer {
             TimerTask taskFetchTime = new TimerTask() {
                 @Override
                 public void run() {
-                    try {
-                        new HttpFetcher(MainActivity.this ).execute( new URL( HttpFetcher.TIME_URL ) );
-                    } catch(MalformedURLException e)
-                    {
-                        Log.e( "Timer.run", e.getMessage() );
-                        MainActivity.this.setStatus( R.string.status_incorrect_url );
-                    }
+                        FETCHER.execute();
                 }
             };
 
