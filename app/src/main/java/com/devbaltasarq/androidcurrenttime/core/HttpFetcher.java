@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
  * Created by baltasarq on 4/12/2015.
  */
 public class HttpFetcher {
-    public static final String LOG_TAG = "HttpFetcher";
+    public static final String LOG_TAG = HttpFetcher.class.getSimpleName();
     public static final String TIME_URL = "http://api.geonames.org/timezoneJSON?lat=42.34&lng=-7.86&username=dispositivos_moviles";
 
     public HttpFetcher(Observer activity)
@@ -34,14 +34,14 @@ public class HttpFetcher {
         final Executor EXECUTOR = Executors.newSingleThreadExecutor();
         final Handler HANDLER = new Handler( Looper.getMainLooper() );
 
-        EXECUTOR.execute( () ->{
+        EXECUTOR.execute( () -> {
             final HttpFetcher SELF = HttpFetcher.this;
             boolean result = false;
 
             try {
                 result = SELF.doInBackground( new URL( TIME_URL ) );
             } catch (MalformedURLException e) {
-                Log.e( "Timer.run", e.getMessage() );
+                Log.e( LOG_TAG, e.getMessage() );
                 SELF.activity.setStatus( R.string.status_incorrect_url );
             }
 
