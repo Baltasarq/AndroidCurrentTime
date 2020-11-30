@@ -19,10 +19,11 @@ import java.util.concurrent.Executors;
 /**
  * Fetches the time from GeoNames
  * Created by baltasarq on 4/12/2015.
+ *      Modified on 30/11/2020 in order to drop AsyncTask<>.
  */
 public class HttpFetcher {
-    public static final String LOG_TAG = HttpFetcher.class.getSimpleName();
-    public static final String TIME_URL = "http://api.geonames.org/timezoneJSON?lat=42.34&lng=-7.86&username=dispositivos_moviles";
+    private static final String LOG_TAG = HttpFetcher.class.getSimpleName();
+    private static final String TIME_URL = "http://api.geonames.org/timezoneJSON?lat=42.34&lng=-7.86&username=dispositivos_moviles";
 
     public HttpFetcher(Observer activity)
     {
